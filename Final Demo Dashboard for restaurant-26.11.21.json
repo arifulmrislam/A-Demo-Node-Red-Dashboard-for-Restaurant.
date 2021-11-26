@@ -1,0 +1,2107 @@
+[
+    {
+        "id": "9596319df5181fd4",
+        "type": "tab",
+        "label": "ThingsBoar Dashboard for Bucharest",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a3dd4f4a1aec64ac",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "900",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [
+                "4641499c3e0558c2"
+            ]
+        ]
+    },
+    {
+        "id": "4641499c3e0558c2",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\nlet EM1_Energy = flow.get('EM1_Energy')||0;\nlet EM1_V1 = flow.get('EM1_V1')||0;\nlet EM1_V2 = flow.get('EM1_V2')||0;\nlet EM1_V3 = flow.get('EM1_V3')||0;\nlet EM1_FR = 50;\nlet EM1_Power = flow.get('EM1_Power')||0;\n\nlet RestOfEnergy = flow.get('RestOfEnergy')||0;\n\nlet EM2_Energy = flow.get('EM2_Energy')||0;\nlet EM2_Power = flow.get('EM2_Power')||0;\n\nlet EM3_Energy = flow.get('EM3_Energy')||0;\nlet EM3_Power = flow.get('EM3_Power')||0;\n\nlet EM4_Energy = flow.get('EM4_Energy')||0;\nlet EM4_Power = flow.get('EM4_Power')||0;\n\nlet EM5_Energy = flow.get('EM5_Energy')||0;\nlet EM5_Power = flow.get('EM5_Power')||0;\n\nlet RestOfPower = flow.get('RestOfPower')||0;\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\n// RestOfEnergy += getRndInteger(1, 2);\n// EM2_Energy += getRndInteger(2, 3);\n// EM3_Energy += getRndInteger(2, 3);\n// EM4_Energy += getRndInteger(2, 3);\n// EM5_Energy += getRndInteger(2, 3);\n// EM1_Energy = (RestOfEnergy + (EM2_Energy + EM3_Energy + EM4_Energy + EM5_Energy));\n\nEM1_V1 = getRndInteger(225, 230).toFixed(2);\nEM1_V2 = getRndInteger(225, 230).toFixed(2);\nEM1_V3 = getRndInteger(225, 230).toFixed(2);\n\n// RestOfPower += getRndInteger(1, 2);\n// EM2_Power += getRndInteger(2, 3);\n// EM3_Power += getRndInteger(3, 4);\n// EM4_Power += getRndInteger(4, 5);\n// EM5_Power += getRndInteger(5, 6);\n// EM1_Power = (RestOfPower + (EM2_Power + EM3_Power + EM4_Power + EM5_Power));\n\n\n// store the value back\nflow.set([\"EM1_Energy\",\"EM2_Energy\", \"EM3_Energy\",\"EM4_Energy\", \"EM5_Energy\",\"RestOfEnergy\",\"EM1_V1\", \"EM1_V2\", \"EM1_V3\", \"EM1_Power\", \"EM2_Power\", \"EM3_Power\", \"EM4_Power\", \"EM5_Power\", \"RestOfPower\"],[EM1_Energy,EM2_Energy, EM3_Energy, \nEM4_Energy, EM5_Energy,RestOfEnergy,EM1_V1, EM1_V2, EM1_V3, EM1_Power, EM2_Power, EM3_Power, EM4_Power, EM5_Power, RestOfPower]);\n\n// make it part of the outgoing msg object\nmsg.payload = {EM1_Energy, EM2_Energy, EM3_Energy, EM4_Energy, EM5_Energy, RestOfEnergy, EM1_V1, EM1_V2, EM1_V3, EM1_FR, EM1_Power, EM2_Power, EM3_Power, EM4_Power, EM5_Power, RestOfPower};\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 80,
+        "wires": [
+            [
+                "f3cc87d5206dba16"
+            ]
+        ]
+    },
+    {
+        "id": "f3cc87d5206dba16",
+        "type": "debug",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d18e47282a054ed8",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Reset Energy",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 40,
+        "wires": [
+            [
+                "9a742db029960b07"
+            ]
+        ]
+    },
+    {
+        "id": "9a742db029960b07",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "var EM1_Energy = flow.get('EM1_Energy');\nvar EM1_V1 = flow.get('EM1_V1');\nvar EM1_V2 = flow.get('EM1_V2');\nvar EM1_V3 = flow.get('EM1_V3');\nvar EM1_Power = flow.get('EM1_Power');\n\nvar RestOfEnergy = flow.get('RestOfEnergy');\n\nvar EM2_Energy = flow.get('EM2_Energy');\nlet EM2_Power = flow.get('EM2_Power');\n\nlet EM3_Energy = flow.get('EM3_Energy');\nlet EM3_Power = flow.get('EM3_Power');\n\nlet EM4_Energy = flow.get('EM4_Energy');\nlet EM4_Power = flow.get('EM4_Power');\n\nlet EM5_Energy = flow.get('EM5_Energy');\nlet EM5_Power = flow.get('EM5_Power');\n\nlet Water_Meter_BUH = flow.get('Water_Meter_BUH');\nlet Gas_Meter_BUH = flow.get('Gas_Meter_BUH');\n\n// Reset the value of Energy Meter\nflow.set([\"EM1_Energy\",\"EM2_Energy\", \"EM3_Energy\",\"EM4_Energy\", \"EM5_Energy\",\"RestOfEnergy\",\"EM1_V1\", \"EM1_V2\", \"EM1_V3\", \"EM1_Power\", \"EM2_Power\", \"EM3_Power\", \"EM4_Power\", \"EM5_Power\", \"Water_Meter_BUH\", \"Gas_Meter_BUH\"],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);\n\n// make it part of the outgoing msg object\nmsg.payload = {EM1_Energy, EM2_Energy, EM3_Energy, EM4_Energy, EM5_Energy, RestOfEnergy, EM1_V1, EM1_V2, EM1_V3, EM1_Power, EM2_Power, EM3_Power, EM4_Power, EM5_Power, Water_Meter_BUH, Gas_Meter_BUH};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 40,
+        "wires": [
+            [
+                "f3cc87d5206dba16"
+            ]
+        ]
+    },
+    {
+        "id": "09d901a584828cd9",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\nvar msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\nvar msg5 = {};\nlet EM1_Energy = flow.get('EM1_Energy')||0;\nlet EM2_Energy = flow.get('EM2_Energy')||0;\nlet EM3_Energy = flow.get('EM3_Energy')||0;\nlet EM4_Energy = flow.get('EM4_Energy')||0;\nlet EM5_Energy = flow.get('EM5_Energy')||0;\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nEM2_Energy += getRndInteger(2, 3);\nEM3_Energy += getRndInteger(2, 3);\nEM4_Energy += getRndInteger(2, 3);\nEM5_Energy += getRndInteger(2, 3);\nEM1_Energy += getRndInteger(2, 3);\n\n// store the value back\nflow.set([\"EM1_Energy\",\"EM2_Energy\", \"EM3_Energy\",\"EM4_Energy\", \"EM5_Energy\"],[EM1_Energy,EM2_Energy, EM3_Energy, \nEM4_Energy, EM5_Energy]);\n\n// make it part of the outgoing msg object\nmsg1.payload = {EM1_Energy};\nmsg1.topic = 'Rooftop';\nmsg2.payload = {EM2_Energy};\nmsg2.topic = 'Grill';\nmsg3.payload = {EM3_Energy};\nmsg3.topic = 'Cuve cartofi';\nmsg4.payload = {EM4_Energy};\nmsg4.topic = 'Cuve pește';\nmsg5.payload = {EM5_Energy};\nmsg5.topic = 'Alți consumatori';\nreturn [msg1, msg2, msg3, msg4, msg5];\n\n",
+        "outputs": 6,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 280,
+        "wires": [
+            [
+                "69beb2d946d62253"
+            ],
+            [
+                "d9cab9ca92475d9f"
+            ],
+            [
+                "62a12ea86c85facc"
+            ],
+            [
+                "53c1e5a078c72f5d"
+            ],
+            [
+                "8eb66c06d357c060"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e39ef3ca882ee91c",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "09d901a584828cd9"
+            ]
+        ]
+    },
+    {
+        "id": "69beb2d946d62253",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM1_Energy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 200,
+        "wires": [
+            [
+                "5862db0d6297de47",
+                "dc1ffaa182380c2c",
+                "6b436439b83b65fa"
+            ]
+        ]
+    },
+    {
+        "id": "d9cab9ca92475d9f",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM2_Energy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 240,
+        "wires": [
+            [
+                "5862db0d6297de47",
+                "dc1ffaa182380c2c"
+            ]
+        ]
+    },
+    {
+        "id": "62a12ea86c85facc",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM3_Energy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            [
+                "5862db0d6297de47",
+                "dc1ffaa182380c2c"
+            ]
+        ]
+    },
+    {
+        "id": "53c1e5a078c72f5d",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM4_Energy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "5862db0d6297de47",
+                "dc1ffaa182380c2c"
+            ]
+        ]
+    },
+    {
+        "id": "8eb66c06d357c060",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM5_Energy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 360,
+        "wires": [
+            [
+                "5862db0d6297de47",
+                "dc1ffaa182380c2c"
+            ]
+        ]
+    },
+    {
+        "id": "5862db0d6297de47",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "1b53031d.c0246d",
+        "order": 1,
+        "width": "11",
+        "height": "5",
+        "label": "Last day",
+        "chartType": "bar",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 660,
+        "y": 320,
+        "wires": [
+            [
+                "6b436439b83b65fa"
+            ]
+        ]
+    },
+    {
+        "id": "6b436439b83b65fa",
+        "type": "debug",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "808f9bc9850d1053",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\nvar msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nvar msg4 = {};\nvar msg5 = {};\nlet EM1_Power = flow.get('EM1_Power')||0;\nlet EM2_Power = flow.get('EM2_Power')||0;\nlet EM3_Power = flow.get('EM3_Power')||0;\nlet EM4_Power = flow.get('EM4_Power')||0;\nlet EM5_Power = flow.get('EM5_Power')||0;\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nEM1_Power += getRndInteger(7, 8);\nEM2_Power += getRndInteger(2, 3);\nEM3_Power += getRndInteger(3, 4);\nEM4_Power += getRndInteger(4, 5);\nEM5_Power += getRndInteger(5, 6);\n\n\n// store the value back\nflow.set([\"EM1_Power\", \"EM2_Power\", \"EM3_Power\", \"EM4_Power\", \"EM5_Power\"],[EM1_Power, EM2_Power, EM3_Power, EM4_Power, EM5_Power]);\n\n// make it part of the outgoing msg object\nmsg1.payload = {EM1_Power};\nmsg1.topic = 'Cuve cartofi';\nmsg2.payload = {EM2_Power};\nmsg2.topic = 'Grill';\nmsg3.payload = {EM3_Power};\nmsg3.topic = 'Cuve pește';\nmsg4.payload = {EM4_Power};\nmsg4.topic = 'Rooftop';\nmsg5.payload = {EM5_Power};\nmsg5.topic = 'Alți consumatori';\nreturn [msg1, msg2, msg3, msg4, msg5];\n\n",
+        "outputs": 5,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 500,
+        "wires": [
+            [
+                "e51a1912e084720d"
+            ],
+            [
+                "8a92ba9efcc57d7b"
+            ],
+            [
+                "1b859aadaa635ebc"
+            ],
+            [
+                "eaa67ed91ea02ee8"
+            ],
+            [
+                "715cec759caf569d"
+            ]
+        ]
+    },
+    {
+        "id": "9b43953fda714613",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 500,
+        "wires": [
+            [
+                "808f9bc9850d1053"
+            ]
+        ]
+    },
+    {
+        "id": "e51a1912e084720d",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM1_Power",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 420,
+        "wires": [
+            [
+                "f8c9daaf57a58208",
+                "726a4a266b4d29c5",
+                "36a4fc3801cfe900"
+            ]
+        ]
+    },
+    {
+        "id": "8a92ba9efcc57d7b",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM2_Power",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 460,
+        "wires": [
+            [
+                "f8c9daaf57a58208",
+                "726a4a266b4d29c5"
+            ]
+        ]
+    },
+    {
+        "id": "1b859aadaa635ebc",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM3_Power",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 500,
+        "wires": [
+            [
+                "f8c9daaf57a58208",
+                "726a4a266b4d29c5"
+            ]
+        ]
+    },
+    {
+        "id": "eaa67ed91ea02ee8",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM4_Power",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 540,
+        "wires": [
+            [
+                "f8c9daaf57a58208",
+                "726a4a266b4d29c5"
+            ]
+        ]
+    },
+    {
+        "id": "715cec759caf569d",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.EM5_Power",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 580,
+        "wires": [
+            [
+                "f8c9daaf57a58208",
+                "726a4a266b4d29c5"
+            ]
+        ]
+    },
+    {
+        "id": "f8c9daaf57a58208",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "5d336d38c5d7f86f",
+        "order": 1,
+        "width": "11",
+        "height": "6",
+        "label": "Last day",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 680,
+        "y": 480,
+        "wires": [
+            [
+                "36a4fc3801cfe900"
+            ]
+        ]
+    },
+    {
+        "id": "36a4fc3801cfe900",
+        "type": "debug",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "dc1ffaa182380c2c",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "9bdcad75e86874d5",
+        "order": 1,
+        "width": "11",
+        "height": "5",
+        "label": "",
+        "chartType": "pie",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 650,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d804638616763fdc",
+        "type": "ui_template",
+        "z": "9596319df5181fd4",
+        "group": "1b53031d.c0246d",
+        "name": "Clock Toolbar",
+        "order": 3,
+        "width": 2,
+        "height": 1,
+        "format": "<script id=\"titleScript\" type=\"text/javascript\">\n\n$(function() {\n    if($('.md-toolbar-tools').length != 0){\n        loadClock();\n    }else setTimeout(loadClock, 500)\n});\n\nfunction loadClock(){\n    $('#clock').remove();\n    var toolbar = $('.md-toolbar-tools');\n    \n    var div = $('<div/>');\n    var p = $('<p/ id=\"clock\">');\n    \n    div.append(p);\n    div[0].style.margin = '5px 5px 5px auto';\n    toolbar.append(div);\n\n    function displayTitle(lh) {\n        p.text(lh); \n    }\n    \n    function upTime() {\n        var d = new Date();\n        p.text(d.toLocaleString());\n    }\n\n    if(document.clockInterval){ \n            clearInterval(document.clockInterval);\n            document.clockInterval = null;\n    }\n        \n    document.clockInterval = setInterval(upTime,1000);\n}\n\n</script>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "x": 100,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3bdedae321e73a19",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 660,
+        "wires": [
+            [
+                "2ba7482a16f48e3f",
+                "de919b4ec809b6fe"
+            ]
+        ]
+    },
+    {
+        "id": "2ba7482a16f48e3f",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Water_Meter_BUH",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\n\nlet Water_Meter_BUH = flow.get('Water_Meter_BUH')||0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nWater_Meter_BUH += getRndInteger(1, 3);\n\n\n// store the value back\nflow.set([\"Water_Meter_BUH\"],[Water_Meter_BUH]);\n\n// make it part of the outgoing msg object\nmsg.payload = {Water_Meter_BUH};\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 640,
+        "wires": [
+            [
+                "6d6a0e8d86d0874b"
+            ]
+        ]
+    },
+    {
+        "id": "de919b4ec809b6fe",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Gas_Meter_BUH",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\n\nlet Gas_Meter_BUH = flow.get('Gas_Meter_BUH')||0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nGas_Meter_BUH += getRndInteger(2, 3);\n\n\n// store the value back\nflow.set([\"Gas_Meter_BUH\"],[Gas_Meter_BUH]);\n\n// make it part of the outgoing msg object\nmsg.payload = {Gas_Meter_BUH};\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 700,
+        "wires": [
+            [
+                "75b592a3e905ac7f"
+            ]
+        ]
+    },
+    {
+        "id": "bb57c70a912e43b8",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "a3f2bd6e367dd2d4",
+        "order": 1,
+        "width": "11",
+        "height": "5",
+        "label": "Realtime - Last 7 Days",
+        "chartType": "bar",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 840,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc4432a47b8f96d6",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "2fc3ee8677e26ede",
+        "order": 2,
+        "width": "11",
+        "height": "5",
+        "label": "Realtime - Last 7 Days",
+        "chartType": "bar",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 840,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6d6a0e8d86d0874b",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Water_Meter_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 640,
+        "wires": [
+            [
+                "3461fe7e4e1aebac"
+            ]
+        ]
+    },
+    {
+        "id": "75b592a3e905ac7f",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Gas_Meter_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 700,
+        "wires": [
+            [
+                "17c960c087fb4e73"
+            ]
+        ]
+    },
+    {
+        "id": "3461fe7e4e1aebac",
+        "type": "bar-chart-data",
+        "z": "9596319df5181fd4",
+        "name": "bar-chart-data",
+        "x_interval": "minutes",
+        "x_size": "10",
+        "unit": "",
+        "precision": 2,
+        "is_meter_reading": "False",
+        "agg_by": "sum",
+        "x": 640,
+        "y": 640,
+        "wires": [
+            [
+                "bb57c70a912e43b8"
+            ]
+        ]
+    },
+    {
+        "id": "17c960c087fb4e73",
+        "type": "bar-chart-data",
+        "z": "9596319df5181fd4",
+        "name": "bar-chart-data",
+        "x_interval": "minutes",
+        "x_size": "10",
+        "unit": "",
+        "precision": 2,
+        "is_meter_reading": "False",
+        "agg_by": "sum",
+        "x": 640,
+        "y": 700,
+        "wires": [
+            [
+                "cc4432a47b8f96d6"
+            ]
+        ]
+    },
+    {
+        "id": "33b39d243952b070",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 860,
+        "wires": [
+            [
+                "b5fb3c3c25331920",
+                "9d702703f3b67ed0"
+            ]
+        ]
+    },
+    {
+        "id": "b5fb3c3c25331920",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Temperature",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\nvar msg1 = {};\nvar msg2 = {};\nvar msg3 = {};\nlet Indoor_K_Temperature_1_BUH = 0;\nlet Indoor_L_Temperature_1_BUH = 0;\nlet Outdoor_Temperature_1_BUH = 0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return ((Math.random() * (max - min + 1) ) + min);\n}\n/*Random Integer Generator*/\nfunction getRndInt(min, max) {\n  return Math.floor(Math.random() * (max - min + 1)) + min;\n}\n\nIndoor_K_Temperature_1_BUH = getRndInt(20, 50);\nIndoor_L_Temperature_1_BUH = getRndInt(18, 35);\nOutdoor_Temperature_1_BUH = getRndInt(-30, 50);\n\n\n\n// make it part of the outgoing msg object\nmsg1.payload = {Indoor_K_Temperature_1_BUH};\nmsg1.topic = 'Temperature Lobby';\nmsg2.payload = {Indoor_L_Temperature_1_BUH};\nmsg2.topic = 'Temperature bucatarie';\nmsg3.payload = {Outdoor_Temperature_1_BUH};\nmsg3.topic = 'Temperature exterior';\nreturn [msg1, msg2, msg3];\n",
+        "outputs": 3,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 820,
+        "wires": [
+            [
+                "574c87773e36b22a"
+            ],
+            [
+                "87fce44c60a4080e"
+            ],
+            [
+                "e409e799a60dcfe2"
+            ]
+        ]
+    },
+    {
+        "id": "87fce44c60a4080e",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Indoor_L_Temperature_1_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 820,
+        "wires": [
+            [
+                "5ca80880b481cf32"
+            ]
+        ]
+    },
+    {
+        "id": "574c87773e36b22a",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Indoor_K_Temperature_1_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 780,
+        "wires": [
+            [
+                "5ca80880b481cf32"
+            ]
+        ]
+    },
+    {
+        "id": "e409e799a60dcfe2",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Outdoor_Temperature_1_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 860,
+        "wires": [
+            [
+                "5ca80880b481cf32"
+            ]
+        ]
+    },
+    {
+        "id": "5ca80880b481cf32",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "2fcef4f3643e6894",
+        "order": 4,
+        "width": "11",
+        "height": "5",
+        "label": "Last day",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 680,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30dcb8bae6b3dbfe",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "6e0c6ec7aab2505b",
+        "order": 3,
+        "width": "11",
+        "height": "5",
+        "label": "Last day",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 680,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "726a4a266b4d29c5",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "8f078dd5f6833472",
+        "order": 2,
+        "width": "11",
+        "height": "5",
+        "label": "",
+        "chartType": "pie",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 670,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a8b995154506e874",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Index contor general",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\n\nlet EM1_Energy = flow.get('EM1_Energy')||0;\nlet EM2_Energy = flow.get('EM2_Energy')||0;\nlet EM3_Energy = flow.get('EM3_Energy')||0;\nlet EM4_Energy = flow.get('EM4_Energy')||0;\nlet EM5_Energy = flow.get('EM5_Energy')||0;\nlet RestOfEnergy = flow.get('RestOfEnergy')||0;\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nEM2_Energy += getRndInteger(2, 3);\nEM3_Energy += getRndInteger(2, 3);\nEM4_Energy += getRndInteger(2, 3);\nEM5_Energy += getRndInteger(2, 3);\nEM1_Energy += getRndInteger(2, 3);\nRestOfEnergy = (EM1_Energy + EM2_Energy + EM3_Energy + EM4_Energy + EM5_Energy);\n\n// store the value back\nflow.set([\"EM1_Energy\",\"EM2_Energy\", \"EM3_Energy\",\"EM4_Energy\", \"EM5_Energy\", \"RestOfEnergy\"],[EM1_Energy,EM2_Energy, EM3_Energy, \nEM4_Energy, EM5_Energy, RestOfEnergy]);\n\n// make it part of the outgoing msg object\nmsg.payload = {RestOfEnergy};\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 1040,
+        "wires": [
+            [
+                "80b6404fcf5c2444"
+            ]
+        ]
+    },
+    {
+        "id": "9a684bb064da0553",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 1040,
+        "wires": [
+            [
+                "a8b995154506e874"
+            ]
+        ]
+    },
+    {
+        "id": "809d493571a67a27",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "77bb1f8aa8c78399",
+        "order": 1,
+        "width": "8",
+        "height": "5",
+        "label": "Realtime - Last 30 days",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 690,
+        "y": 1040,
+        "wires": [
+            [
+                "21e313972af5d96a"
+            ]
+        ]
+    },
+    {
+        "id": "80b6404fcf5c2444",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.RestOfEnergy",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1040,
+        "wires": [
+            [
+                "809d493571a67a27"
+            ]
+        ]
+    },
+    {
+        "id": "27a3235962e484c4",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 1200,
+        "wires": [
+            [
+                "0cd86cdba1057e83",
+                "0db8631502119cc1"
+            ]
+        ]
+    },
+    {
+        "id": "0cd86cdba1057e83",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Water_Meter_BUH",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\n\nlet Water_Meter_BUH = flow.get('Water_Meter_BUH')||0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nWater_Meter_BUH += getRndInteger(1, 3);\n\n\n// store the value back\nflow.set([\"Water_Meter_BUH\"],[Water_Meter_BUH]);\n\n// make it part of the outgoing msg object\nmsg.payload = {Water_Meter_BUH};\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 1160,
+        "wires": [
+            [
+                "1ccdc1f55e42a635"
+            ]
+        ]
+    },
+    {
+        "id": "0db8631502119cc1",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Gas_Meter_BUH",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\n\nlet Gas_Meter_BUH = flow.get('Gas_Meter_BUH')||0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return Math.floor((Math.random() * (max - min + 1) ) + min);\n}\n\nGas_Meter_BUH += getRndInteger(2, 3);\n\n\n// store the value back\nflow.set([\"Gas_Meter_BUH\"],[Gas_Meter_BUH]);\n\n// make it part of the outgoing msg object\nmsg.payload = {Gas_Meter_BUH};\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 1240,
+        "wires": [
+            [
+                "c80146531ae64f91"
+            ]
+        ]
+    },
+    {
+        "id": "1ccdc1f55e42a635",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Water_Meter_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1160,
+        "wires": [
+            [
+                "ed082e7d3bf62838"
+            ]
+        ]
+    },
+    {
+        "id": "c80146531ae64f91",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Gas_Meter_BUH",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1240,
+        "wires": [
+            [
+                "0889121a1773a03f"
+            ]
+        ]
+    },
+    {
+        "id": "ed082e7d3bf62838",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "b1a2ba1669a54764",
+        "order": 1,
+        "width": "7",
+        "height": "5",
+        "label": "Realtime - Last 30 days",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "7",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 710,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0889121a1773a03f",
+        "type": "ui_chart",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "group": "f6fc60f910541b2f",
+        "order": 2,
+        "width": "7",
+        "height": "5",
+        "label": "Realtime - Last 30 days",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "7",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 690,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d702703f3b67ed0",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "Umiditate",
+        "func": "/* initialise the Meter to 0 if it doesn't exist already */\nvar msg1 = {};\nvar msg2 = {};\nlet Indoor_Humidity = 0;\nlet Outdoor_Humidity = 0;\n\n\n/*Random Integer Generator*/\nfunction getRndInteger(min, max) {\n  return ((Math.random() * (max - min + 1) ) + min);\n}\n/*Random Integer Generator*/\nfunction getRndInt(min, max) {\n  return Math.floor(Math.random() * (max - min + 1)) + min;\n}\n\nIndoor_Humidity = getRndInt(50, 60);\nOutdoor_Humidity = getRndInt(55, 65);\n\n\n// make it part of the outgoing msg object\nmsg1.payload = {Indoor_Humidity};\nmsg1.topic = 'Umiditate lobby';\nmsg2.payload = {Outdoor_Humidity};\nmsg2.topic = 'Umiditate bucătărie';\nreturn [msg1, msg2];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 920,
+        "wires": [
+            [
+                "0b4f1ca7d3648954"
+            ],
+            [
+                "fd143aa1b9e8843f"
+            ]
+        ]
+    },
+    {
+        "id": "0b4f1ca7d3648954",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Indoor_Humidity",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 900,
+        "wires": [
+            [
+                "30dcb8bae6b3dbfe"
+            ]
+        ]
+    },
+    {
+        "id": "fd143aa1b9e8843f",
+        "type": "change",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.Outdoor_Humidity",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 940,
+        "wires": [
+            [
+                "30dcb8bae6b3dbfe"
+            ]
+        ]
+    },
+    {
+        "id": "21e313972af5d96a",
+        "type": "debug",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "fc62c3cef97bdea7",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "filter",
+        "func": "if (msg.payload.action === \"connected\") { return msg; }\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 1340,
+        "wires": [
+            [
+                "fb41c1f3643dd622"
+            ]
+        ]
+    },
+    {
+        "id": "fb41c1f3643dd622",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "set gateway position",
+        "func": "var lat = 45.7275800;\nvar lon = 9.0198400;\nmsg.payload = {\n    lat:lat,\n    lon:lon,\n    name: \"Gateway SS10680 - Gunzate\",\n    icone: \"fa-mp-marker fa-3x\"\n};\n\nreturn mgs;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1340,
+        "wires": [
+            [
+                "da32f17b0dd73a50"
+            ]
+        ]
+    },
+    {
+        "id": "2459d58a05c91404",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Total Energy",
+        "info": "",
+        "x": 90,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "013e7850ceb4c081",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Total water and gas consume",
+        "info": "",
+        "x": 140,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "2e21e02e3a1c3b76",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Google map",
+        "info": "",
+        "x": 90,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "9a2093bf102df36f",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Temperature and Umiditate",
+        "info": "",
+        "x": 130,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "bafe3ff72cf22e52",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Water and Gas",
+        "info": "",
+        "x": 120,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "3cfe6c354b13463f",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Putere",
+        "info": "",
+        "x": 90,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "f4953fb89bf5f119",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Consume energie",
+        "info": "",
+        "x": 130,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "805b649c52cc1c56",
+        "type": "inject",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 1480,
+        "wires": [
+            [
+                "9e53a19e152adfd3"
+            ]
+        ]
+    },
+    {
+        "id": "9e53a19e152adfd3",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "generator",
+        "func": "var max = 99;\nvar min = 30;\nmsg.payload= Math.round(Math.random() * (max - min +1) + min);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 1480,
+        "wires": [
+            [
+                "e0c1089e3860c078",
+                "6f279a356d04bfb4"
+            ]
+        ]
+    },
+    {
+        "id": "6f279a356d04bfb4",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "var num = msg.payload;\n\nif (40 <= num && num < 60) {\n    count = 0\n} else if (num > 61) {\n    count = 1\n}else {\n    count = 2\n}\n\n\nmsg.payload = count; \n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 1440,
+        "wires": [
+            [
+                "7e765921721ab255"
+            ]
+        ]
+    },
+    {
+        "id": "e0c1089e3860c078",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "var num = msg.payload;\n\nif (40 <= num && num <= 60) {\n    count = \"Major\"\n}\nelse if (61 <= num) {\n    count = \"Critical\"\n}\nelse if (num <= 39 && num > 0){\n    count = \"Normal\"\n}\n\nmsg.payload = count; \n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 1500,
+        "wires": [
+            [
+                "2d70cf95d212a0b0"
+            ]
+        ]
+    },
+    {
+        "id": "7e765921721ab255",
+        "type": "function",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "func": "var num2 = msg.payload;\n\nif(num2 == 0){\n    count1 = \"yellow\";\n}\nelse if(num2 == 1){\n    count1 =  \"red\";\n}\nelse if(num2 == 2){\n    count1 = \"lime\";\n}\n\nmsg.payload = count1; \n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1440,
+        "wires": [
+            [
+                "ae74755e15c26f1a"
+            ]
+        ]
+    },
+    {
+        "id": "89c3bd0aa9cbb441",
+        "type": "comment",
+        "z": "9596319df5181fd4",
+        "name": "Alarm",
+        "info": "",
+        "x": 90,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "f6f92e77c98c4680",
+        "type": "worldmap in",
+        "z": "9596319df5181fd4",
+        "name": "",
+        "path": "/worldmap",
+        "events": "connect,disconnect,point,bounds,files,draw,other",
+        "x": 100,
+        "y": 1340,
+        "wires": [
+            [
+                "fc62c3cef97bdea7"
+            ]
+        ]
+    },
+    {
+        "id": "2d70cf95d212a0b0",
+        "type": "ui_text",
+        "z": "9596319df5181fd4",
+        "group": "2154918d870f96a7",
+        "order": 2,
+        "width": "11",
+        "height": 1,
+        "name": "",
+        "label": "STATUS",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 700,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "ae74755e15c26f1a",
+        "type": "ui_template",
+        "z": "9596319df5181fd4",
+        "group": "2154918d870f96a7",
+        "name": "Switch 1 Status",
+        "order": 1,
+        "width": "11",
+        "height": "5",
+        "format": "<style>\n.led-green {\nmargin: 0 auto;\nwidth: 120px;\nheight: 120px;\nbackground-color: #ABFF00;\nborder-radius: 50%;\n{\n</style>\n<table>\n    <tr>\n <h4>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Temperatură Lobby Alarm </h4>\n    </tr>\n<tr>\n<td><div class=\"led-green\" style=\"background-color:{{msg.payload}}\"></div></td>\n<td></td>\n</tr>\n</table>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 660,
+        "y": 1520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da32f17b0dd73a50",
+        "type": "ui_worldmap",
+        "z": "9596319df5181fd4",
+        "group": "5f58f55a100d22d1",
+        "order": 1,
+        "width": "11",
+        "height": "6",
+        "name": "",
+        "lat": "44.4242",
+        "lon": "25.9986",
+        "zoom": "6",
+        "layer": "OSMG",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "hide",
+        "layers": "hide",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "true",
+        "coords": "none",
+        "showgrid": "false",
+        "allowFileDrop": "false",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN,HM",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriDG,UKOS,SW",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 620,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "1b53031d.c0246d",
+        "type": "ui_group",
+        "name": "Consum energie",
+        "tab": "30166f88.5575f",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5d336d38c5d7f86f",
+        "type": "ui_group",
+        "name": "Putere",
+        "tab": "30166f88.5575f",
+        "order": 2,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9bdcad75e86874d5",
+        "type": "ui_group",
+        "name": "Ponderea consumurilor energetice (ultimele 5 minute)",
+        "tab": "30166f88.5575f",
+        "order": 3,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a3f2bd6e367dd2d4",
+        "type": "ui_group",
+        "name": "Consum apă",
+        "tab": "30166f88.5575f",
+        "order": 10,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2fc3ee8677e26ede",
+        "type": "ui_group",
+        "name": "Consum gaz",
+        "tab": "30166f88.5575f",
+        "order": 11,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2fcef4f3643e6894",
+        "type": "ui_group",
+        "name": "Temperatură",
+        "tab": "30166f88.5575f",
+        "order": 8,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "6e0c6ec7aab2505b",
+        "type": "ui_group",
+        "name": "Umiditate",
+        "tab": "30166f88.5575f",
+        "order": 9,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8f078dd5f6833472",
+        "type": "ui_group",
+        "name": "Ponderea consumurilor energetice (luna curenta)",
+        "tab": "30166f88.5575f",
+        "order": 4,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "77bb1f8aa8c78399",
+        "type": "ui_group",
+        "name": "Index contor general",
+        "tab": "30166f88.5575f",
+        "order": 5,
+        "disp": true,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b1a2ba1669a54764",
+        "type": "ui_group",
+        "name": "Index contor apă",
+        "tab": "30166f88.5575f",
+        "order": 6,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f6fc60f910541b2f",
+        "type": "ui_group",
+        "name": "Index contor gaz",
+        "tab": "30166f88.5575f",
+        "order": 7,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2154918d870f96a7",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "30166f88.5575f",
+        "order": 13,
+        "disp": false,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5f58f55a100d22d1",
+        "type": "ui_group",
+        "name": "Map",
+        "tab": "30166f88.5575f",
+        "order": 12,
+        "disp": false,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "30166f88.5575f",
+        "type": "ui_tab",
+        "name": "Bucuresti Cascadelor Restaurant",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
